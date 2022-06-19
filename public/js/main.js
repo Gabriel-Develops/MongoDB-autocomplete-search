@@ -1,5 +1,3 @@
-const { response } = require("express")
-
 $(document).ready( function() {
     $('#title').autocomplete({
         source: async function(req, res) {
