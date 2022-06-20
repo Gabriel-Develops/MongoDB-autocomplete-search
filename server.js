@@ -2,7 +2,6 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const { MongoClient, ObjectId } = require('mongodb')
-const { response } = require('express')
 require('dotenv').config()
 
 let db,
@@ -14,7 +13,7 @@ MongoClient.connect(dbConnectionStr)
     .then(client => {
         console.log(`Connected to database`)
         db = client.db(dbName)
-        collection= db.collection('movies')
+        collection = db.collection('movies')
     })
 
 app.use(express.urlencoded({extended : true}))
@@ -26,9 +25,9 @@ app.get('/search', async (req, res) => {
     try {
         let result = await collection.aggregate([
             {
-                "$Search": {                    
+                "$search": {                    
                     "autocomplete": {           
-                        "query": `${`request.query.query`}`,
+                        "query": `${req.query.query}`,
                         "path": "title",
                         "fuzzy": {              // User can make spelling mistakes in search
                             "maxEdits": 2,      // User can make up to two spelling mistakes
@@ -38,22 +37,22 @@ app.get('/search', async (req, res) => {
                 }
             }
         ]).toArray()
-        response.send(result)
+        res.send(result)
     } catch (err) {
         console.error(err)
-        response.status(500).send({message: err.message})
+        res.status(500).send({message: err.message})
     }
 })
 
 app.get('/get/:id', async (req, res) => {
     try {
         let result = await collection.findOne({
-            "_id" : ObjectId(request.params.id)
+            "_id" : ObjectId(req.params.id)
         })
-        response.send(result)
+        res.send(result)
     } catch(err) {
         console.error(err)
-        response.status(500).send({message: err.message})
+        res.status(500).send({message: err.message})
     }
 })
 
