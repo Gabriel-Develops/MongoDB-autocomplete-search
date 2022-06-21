@@ -37,6 +37,7 @@ app.get('/search', async (req, res) => {
                 }
             }
         ]).toArray()
+        result = result.slice(0, 10)
         res.send(result)
     } catch (err) {
         console.error(err)

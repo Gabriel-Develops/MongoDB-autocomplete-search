@@ -1,21 +1,22 @@
-$(document).ready(function() {
+// $(...) => Query Selector in jquery
+$(document).ready(() => {
     $('#title').autocomplete({
-        source: async function(req, res) {
-            let data = await fetch(`http://localhost:8000/search?query=${req.term}`)
-                            .then(results => results.json())
-                            .then(results => results.map(result => {
-                                return {
-                                    label: result.title,
-                                    value: result.title,
-                                    id: result._id
-                                }
-                            }))
-                            res(data)
-            // let result = await data.json()
-            // result = result.map()
+        source: async (req, res) => {
+            let reply = await fetch(`http://localhost:8000/search?query=${req.term}`)
+            let results = await reply.json()
+            let data = results.map(result => {
+                console.log(results)
+                return {
+                    label: `${result.title} (${result.year})`,
+                    value: result.title,
+                    id: result._id,
+                }
+            })
+            res(data)
         },
-        minLength: 2,
-        select: function(event, ui) {
+        minLength: 3,
+        select: (event, ui) => {
+            console.log(event, ui)
             console.log(ui.item.id) // We want to pass in the id of the movie and not the name to prevent duplicates being confused
             fetch(`http://localhost:8000/get/${ui.item.id}`)
                 .then(result => result.json())
