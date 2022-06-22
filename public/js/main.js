@@ -2,7 +2,7 @@
 $(document).ready(() => {
     $('#title').autocomplete({
         source: async (req, res) => {
-            let reply = await fetch(`http://localhost:8000/search?query=${req.term}`)
+            let reply = await fetch(`https://mongodb-movie-db-sample.herokuapp.com/search?query=${req.term}`)
             let results = await reply.json()
             let data = results.map(result => {
                 console.log(results)
@@ -18,7 +18,7 @@ $(document).ready(() => {
         select: (event, ui) => {
             console.log(event, ui)
             console.log(ui.item.id) // We want to pass in the id of the movie and not the name to prevent duplicates being confused
-            fetch(`http://localhost:8000/get/${ui.item.id}`)
+            fetch(`https://mongodb-movie-db-sample.herokuapp.com/get/${ui.item.id}`)
                 .then(result => result.json())
                 .then(result => {
                     $('#cast').empty()
