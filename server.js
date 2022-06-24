@@ -57,6 +57,21 @@ app.get('/get/:id', async (req, res) => {
     }
 })
 
+app.get('/rand', async (req, res) => {
+    try {
+        let result = await collection.aggregate([
+            { 
+                $sample: { size: 1 } // Get a random sample size of one
+            }
+        ]).toArray()
+        res.send(result[0])
+    }
+    catch(e) {
+        console.error(e)
+        res.status(500).send({message: err.message})
+    }
+})
+
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html')
 })
